@@ -17,7 +17,7 @@
 
 ## 🧐 Sobre <a name = "about"></a>
 
-?
+Página para listar repositórios do GitHub.
 
 ## 🏁 Primeiros passos <a name = "getting_started"></a>
 
