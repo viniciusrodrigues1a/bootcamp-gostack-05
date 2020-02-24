@@ -12,7 +12,6 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
-    error: false,
   };
 
   // Carregar os dados do localStorage
@@ -44,32 +43,24 @@ export default class Main extends Component {
 
     const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`).catch(_ => {
-      this.setState({ error: true });
-      setTimeout(() => {
-        this.setState({ error: false });
-      }, 500);
+    const response = await api.get(`/repos/${newRepo}`);
+
+    const data = {
+      name: response.data.full_name,
+    };
+
+    this.setState({
+      repositories: [...repositories, data],
+      newRepo: '',
+      loading: false,
     });
-
-    if (response) {
-      const data = {
-        name: response.data.full_name,
-      };
-
-      this.setState({
-        repositories: [...repositories, data],
-        newRepo: '',
-      });
-    }
-
-    this.setState({ loading: false });
   };
 
   render() {
-    const { newRepo, repositories, loading, error } = this.state;
+    const { newRepo, repositories, loading } = this.state;
 
     return (
-      <Container error={error}>
+      <Container>
         <h1>
           <FaGithubAlt />
           Repositórios
