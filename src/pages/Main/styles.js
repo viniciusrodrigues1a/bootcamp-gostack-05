@@ -1,24 +1,5 @@
-import styled, { keyframes, css } from 'styled-components';
-
-export const Container = styled.div`
-  max-width: 700px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin: 80px auto;
-
-  h1 {
-    font-size: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    svg {
-      margin-right: 10px;
-    }
-  }
-`;
+import styled, { css } from 'styled-components';
+import rotate from '../../animations/rotate';
 
 export const Form = styled.form`
   margin-top: 30px;
@@ -31,14 +12,6 @@ export const Form = styled.form`
     padding: 10px 15px;
     border-radius: 4px;
     font-size: 16px;
-  }
-`;
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  } to {
-    transform: rotate(360deg);
   }
 `;
 
