@@ -67,6 +67,7 @@ export default class Main extends Component {
 
         <Form onSubmit={this.handleSubmit}>
           <input
+            disabled={loading}
             type="text"
             placeholder="Adicionar repositório"
             value={newRepo}
