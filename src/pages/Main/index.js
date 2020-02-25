@@ -38,20 +38,19 @@ export default class Main extends Component {
   };
 
   handleSubmit = async e => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    this.setState({ loading: true });
+      this.setState({ loading: true });
 
-    const { newRepo, repositories } = this.state;
+      const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`).catch(_ => {
-      this.setState({ error: true });
-      setTimeout(() => {
-        this.setState({ error: false });
-      }, 500);
-    });
+      if (repositories.filter(repo => repo.name === newRepo).length > 0) {
+        throw new Error('Repositório duplicado');
+      }
 
-    if (response) {
+      const response = await api.get(`/repos/${newRepo}`);
+
       const data = {
         name: response.data.full_name,
       };
@@ -59,10 +58,16 @@ export default class Main extends Component {
       this.setState({
         repositories: [...repositories, data],
         newRepo: '',
+        loading: false,
       });
+    } catch (e) {
+      console.log(e);
+      this.setState({ error: true });
+      setTimeout(() => {
+        this.setState({ error: false });
+        this.setState({ loading: false });
+      }, 500);
     }
-
-    this.setState({ loading: false });
   };
 
   render() {
