@@ -57,13 +57,10 @@ export default class Repository extends Component {
   };
 
   nextPage = async () => {
-    const { page, issues } = this.state;
+    const { page } = this.state;
 
     await this.setState({ page: page + 1 });
-    await this.apiCall();
-
-    if (!issues) {
-    }
+    this.apiCall();
   };
 
   prevPage = async () => {
