@@ -6,17 +6,30 @@ import { FaSpinner } from 'react-icons/fa';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssueList } from './styles';
+import {
+  Loading,
+  Owner,
+  IssueList,
+  SelectContainer,
+  PaginationContainer,
+} from './styles';
 
 export default class Repository extends Component {
   state = {
     repository: {},
     issues: [],
     loading: true,
+    stateFilter: 'all',
+    page: 1,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.apiCall();
+  }
+
+  apiCall = async () => {
     const { match } = this.props;
+    const { stateFilter, page } = this.state;
 
     const repoName = decodeURIComponent(match.params.repoName);
 
@@ -24,8 +37,9 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
+          state: stateFilter,
           per_page: 5,
+          page,
         },
       }),
     ]);
@@ -35,10 +49,34 @@ export default class Repository extends Component {
       issues: issues.data,
       loading: false,
     });
-  }
+  };
+
+  handleSelectChange = async e => {
+    await this.setState({ stateFilter: e.target.value });
+    this.apiCall();
+  };
+
+  nextPage = async () => {
+    const { page, issues } = this.state;
+
+    await this.setState({ page: page + 1 });
+    await this.apiCall();
+
+    if (!issues) {
+    }
+  };
+
+  prevPage = async () => {
+    const { page } = this.state;
+
+    const prevPage = page > 0 ? page - 1 : page;
+
+    await this.setState({ page: prevPage });
+    this.apiCall();
+  };
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, stateFilter, page } = this.state;
 
     if (loading) {
       return (
@@ -61,6 +99,15 @@ export default class Repository extends Component {
         </Owner>
 
         <IssueList>
+          <SelectContainer stateFilter={stateFilter}>
+            <select onChange={this.handleSelectChange}>
+              <option defaultValue value="all">
+                Todas
+              </option>
+              <option value="open">Abertas</option>
+              <option value="closed">Fechadas</option>
+            </select>
+          </SelectContainer>
           {issues.map(issue => (
             <li key={String(issue.id)}>
               <img src={issue.user.avatar_url} alt={issue.user.login} />
@@ -75,6 +122,16 @@ export default class Repository extends Component {
               </div>
             </li>
           ))}
+
+          <PaginationContainer>
+            <button onClick={this.prevPage} disabled={page <= 1} type="button">
+              Anterior
+            </button>
+            <span>Página {page}</span>
+            <button onClick={this.nextPage} type="button">
+              Próxima
+            </button>
+          </PaginationContainer>
         </IssueList>
       </Container>
     );
