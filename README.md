@@ -39,7 +39,7 @@ yarn start
 
 ## ⛏️ Feito com <a name = "built_using"></a>
 
-- [ReactNative](https://reactnative.dev/)
+- [ReactJS](https://reactjs.org/)
 
 ## :memo: Licença <a name = "license"></a>
 
